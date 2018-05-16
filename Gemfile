@@ -10,11 +10,14 @@ gem 'sinatra-activerecord'
 
 gem 'bcrypt'
 
-gem 'sqlite3'
 gem 'nokogiri'
 gem 'cloudinary'
 gem 'dotenv'
 gem 'pry'
+
+group :development do
+    gem 'sqlite3'
+end
 
 group :production do
     gem 'pg', '~> 0.18'
