@@ -1,0 +1,20 @@
+<div class="container">
+    <h2>会員情報変更</h2>
+<form action="/acount_renew/<%= @user.id %>" method="post">
+    <input type="text" class="form-control" name="name" value="<%= @user.name %>"><br>
+    <input type="text" class="form-control" name="university" value="<%= @university.university %>"><br>
+    <input type="text" class="form-control" name="course" value="<%= @university.course %>"><br>
+    <select name="grade">
+        <option value="1" <%= 'selected' if @user.grade == '1' %>>1年生</option>
+        <option value="2" <%= 'selected' if @user.grade == '2' %>>2年生</option>
+        <option value="3" <%= 'selected' if @user.grade == '3' %>>3年生</option>
+        <option value="4" <%= 'selected' if @user.grade == '4' %>>4年生</option>
+    </select><br>
+    <input type="radio" name="sex" value="man" <%= 'checked' if @user.sex == 'man' %>>男</input>
+    <input type="radio" name="sex" value="woman" <%= 'checked' if @user.sex == 'woman' %>>女</input>
+    <input type="radio" name="sex" value="other" <%= 'checked' if @user.sex == 'other' %>>その他</input><br>
+    <input type="text" class="form-control"  name="line_id" value="<%= @user.line_id %>"><br>
+    <input type="text" class="form-control" name="mail" value="<%= @user.mail %>"><br>
+    <input type="submit" class="btn btn-lg btn-warning" value="会員情報を更新">
+</form>
+</div>

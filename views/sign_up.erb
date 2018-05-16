@@ -1,0 +1,22 @@
+
+<h3>会員情報登録</h3>
+<form action="/signup" method="post">
+    <input type="text" class="form-control" name="name" placeholder="ニックネーム" required><br>
+    <input type="text" class="form-control" name="university" placeholder="大学名" required><br>
+    <input type="text" class="form-control" name="course" placeholder="学部" required><br>
+    <select name="grade" class="custom-select" required>
+        <option value="1">1年生</option>
+        <option value="2">2年生</option>
+        <option value="3">3年生</option>
+        <option value="4">4年生</option>
+    </select><br>
+    <label for="sex">性別</label><br>
+    <input type="radio" name="sex" value="man">男</input>
+    <input type="radio" name="sex" value="woman">女</input>
+    <input type="radio" name="sex" value="other" checked>その他</input><br>
+    <input type="text" class="form-control" name="line_id" placeholder="LINE IDを入力してください" required><br>
+    <input type="text" class="form-control" name="mail" placeholder="Eメール" required><br>
+    <input type="password" class="form-control" name="password" placeholder="パスワード" required><br>
+    <input type="password" class="form-control" nmae="password_confirmation" placeholder="パスワードの確認" required><br>
+    <button type="submit" class="btn btn-lg btn-warning">新規登録</button>
+</form>

@@ -1,0 +1,231 @@
+<% unless session[:user] %>
+ <% else %>
+ 
+<% university_id = User.find(session[:user]).university_id 
+  @university = University.find(university_id) %>
+
+
+<% #大学名---------------------------------------------- %> 
+
+<div class="jumbotron jumbotron-fluid" id="university_name">
+  <div class="container">
+   <h2 class="university"><%= @university.university %><br>
+   <%= @university.course %></h2>
+  </div>
+</div>
+ 
+<% #プロフィール---------------------------------------------- %>   
+
+<div class="container">
+<div class="row"> 
+ <div class="col-3">
+     
+         <div class="user-info text-center">
+            <div class="user-header"></div>
+              <div class="user-detail">
+                  <img src="/assets/img/user-icon.png" class="rounded-circle img-thumbnail">
+                  <h5><%= User.find(session[:user]).name %></h5>
+                  <p><i class="fa fa-map-marker" aria-hidden="true"></i><%= @university.university %><br>
+                   <%= @university.course %></p>
+                  <hr>
+                  <p><%= User.find(session[:user]).point %>P</p>
+                  <hr>
+                  <form action="/acount_edit/<%= User.find(session[:user]).id %>" method="post">
+                      <input type="submit" class="btn btn-success btn-sm" value="登録情報を変更する">
+                   </form>
+                  
+               </div>
+            <div class="user-footer"></div>
+         </div>
+
+<% #投稿画面---------------------------------------------- %>        
+     <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#uppModal">
+          投稿する
+     </button>
+
+    <div class="modal fade" id="uppModal" tabindex="-1" role="dialog" aria-labelledby="uppForm" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="uppForm">教科書情報をアップロード</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+              <div class="modal-body">
+                <div class="form-box">
+              <form action="/new" method="post" enctype="multipart/form-data">
+                <label for="title">授業名</label>
+                <input type="text" class="form-control" maxlength="40" name="lesson" required>
+                <label for="title" class="control-label" required>教科書のタイトル</label>
+                <input type="text" class="form-control" maxlength="40" name="title" placeholder="教科書タイトル(40文字まで)" required>
+                <label for="body" class="control-label">自由記入欄</label>
+                <textarea class="form-control" name="body" id="body" rows="4" placeholder="状態や注意点などをご記入ください。"></textarea>
+                <input type="text" maxlength="5" name="point" placeholder="必要なポイント(教科書代の)" required>
+                <label for="point">P</label>
+                <div>
+                 <input type="file" name="img" id="img" required>
+                </div>
+                <input type="submit" class="btn btn-block btn-warning" value="投稿">
+              </form>
+                </div> 
+              </div>
+        </div>
+      </div>
+    </div>
+</div>
+ 
+<% #コンテンツ---------------------------------------------- %>  
+
+<div class="col-9">
+    
+
+<% #教科書表示---------------------------------------------- %> 
+<nav>
+ <div class="nav nav-tabs" id="myTab" role="tablist">
+    <a class="nav-item nav-link active" id="nav-Mlesson-tab" data-toggle="tab" href="#Mlesson-tab" role="tab" aria-controls="Mlesson-tab" aria-selected="true">自分の投稿</a>
+    <a class="nav-item nav-link" id="nav-lesson-tab" data-toggle="tab" href="#lesson-tab" role="tab" aria-controls="lesson-tab" aria-selected="false">授業名の投稿</a>
+    <a class="nav-item nav-link" id="nav-Elesson-tab" data-toggle="tab" href="#Elesson-tab" role="tab" aria-controls="Elesson-tab" aria-selected="false">みんなの投稿</a>
+  </div>
+</nav>
+        <div class="tab-content" id="myTabContent">
+        
+        <% #自分の投稿----------------------- %>   
+        
+          <div class="tab-pane fade  active" id="Mlesson-tab" role="tabpanel" aria-labelledby="contact-tab">
+              <div class="card-columns">
+                  <% 
+                    user = User.find(session[:user])
+                    user_reviews = Review.where({ user_id: user.id }).all
+                    user_reviews.each do |review|
+                   %>
+                   <div class="cardborder card">
+                      <div class="card-img-top ">
+                     <% unless review.img.empty? %>
+                     <img src="<%= review.img %>" height="100">
+                     <% end %>
+                     </div>
+                     <div class="card-body">
+                      <p class="card-title"><%= review.title %></p>
+                      <p class="card-con"><%= review.body %></p>
+                      <p>ポイント：<%= review.point %>P<br>投稿者：<%= user.name %></p>
+                     </div>
+                    <div class="card-footer">
+                        
+                        <% if review.request == 1 %>
+                            <div class="form-inline">
+                                <form action="/request-done/<%= review.id %>" method="post"><input type="submit" value="交渉成立" class="btn btn-outline-warning btn-sm"></form>
+                                <form action="/request-none/<%= review.id %>" method="post"><input type="submit" value="交渉不成立" class="btn btn-outline-warning btn-sm"></form>
+                              </div>
+                              <% else %>
+                                <form action="/delete/<%= review.id %>" method="post"><input type="submit" value="削除" class="btn-outline-secondary btn-sm"></form>
+                        <% end %>
+                        
+                    </div>
+                   </div>
+             <% end %>
+              </div>
+        </div>
+        
+        <% #授業名の投稿----------------------- %> 
+        
+            
+        <div class="tab-pane fade show" id="lesson-tab" role="tabpanel" aria-labelledby="lesson-tab">
+              
+        <% #授業名検索---------------------------------------------- %> 
+        
+                <div class="input-group" id="lesson-select">
+                    <select id="search_lesson" class="custom-select" name="search_lesson" placeholder="授業名を入力してください">
+                     <option disabled selected>授業名を選択してください</option>
+                     <% 
+                      user = User.find(session[:user])
+                      user_lessons = Lesson.where({ university_id: user.university_id }).all
+                      
+                      user_lessons.each do |lesson|
+                     %>
+                      <option value="<%= lesson.id %>"><%= lesson.lesson %></option>
+                     <% end %>
+                    </select>
+                    <div class="input-group-append">
+                       <button class="bt_search_lesson">検索</button>
+                    </div>
+                </div>
+                
+              
+          <div class="card-columns" id="lesson_rev"></div>
+          
+         </div>
+         
+         <% #みんなの投稿----------------------- %> 
+         
+          
+        <div class="tab-pane fade" id="Elesson-tab" role="tabpanel" aria-labelledby="Elesson-tab">
+              <div class="card-columns">
+                  <% 
+                    univ_reviews = Review.where({ university_id: user.university_id }).all
+                    univ_reviews.each do |review|
+                    user_id = review.user_id
+                    user = User.find(user_id)
+                   %>
+                <div class="cardborder card">
+                     <div class="card-img-top ">
+                         <% unless review.img.empty? %>
+                         <img src="<%= review.img %>" height="100">
+                         <% end %>
+                     </div>
+                <div class="card-body">         
+                      <p class="card-title"><%= review.title %></p>
+                      <p  class="card-con"><%= review.body %></p>
+                      <p>ポイント：<%= review.point %>P<br>投稿者：<%= user.name %></p>
+                </div> 
+                 <div class="card-footer">
+                         <% if session[:user] == review.user_id then %>
+                            <% if review.request == 1 %>
+                            <div class="form-inline">
+                                <form action="/request-done/<%= review.id %>" method="post"><input type="submit" value="交渉成立" class="btn btn-outline-warning btn-sm"></form>
+                                <form action="/request-none/<%= review.id %>" method="post"><input type="submit" value="交渉不成立" class="btn btn-outline-warning btn-sm"></form>
+                              </div>
+                              <% else %>
+                                <form action="/delete/<%= review.id %>" method="post"><input type="submit" value="削除" class="btn-outline-secondary btn-sm"></form>
+                        <% end %>
+                        <% else %>
+                             <% if User.find(session[:user]).point <= 0 %>
+                                <form action="/request/<%= review.id %>" method="post"><input type="submit" value="ポイントが足りません" class="btn btn-warning btn-sm" disabled="disabled"></form>
+                             <% else %>   
+                                 <% if review.request == 0 %>
+                                    <form action="/request/<%= review.id %>" method="post"><input type="submit" value="リクエストを送る" class="btn btn-warning btn-sm"></form>
+                                 <% else %>
+                                    <form action="/request/<%= review.id %>" method="post"><input type="submit" value="交渉中" class="btn btn-warning btn-sm" disabled="disabled"></form>
+                                 <% end %>
+                             <% end %>
+                        <% end %>
+                </div>
+                </div>
+             <% end %>
+             </div>
+        </div>
+          
+        </div> 
+ </div>
+ </div>
+ </div>
+<% end %>
+
+<script>
+    window.onload = function() {
+        $(".bt_search_lesson").click(function(){
+        var selectVal = $("#search_lesson").val();
+        console.log('selectVal:' + selectVal);
+        $.ajax({
+            url:"/search_lesson/" + selectVal,
+            method:"GET",
+            dataType: 'text'
+        }).done(function(result){
+            console.log(result);
+            $('#lesson_rev').html(result);
+            });
+        });
+    };
+    
+
+</script>

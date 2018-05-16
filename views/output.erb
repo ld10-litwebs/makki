@@ -1,0 +1,30 @@
+<% 
+           @user = User.find(session[:user])
+           @lesson_reviews = Review.where({ lesson_id: @lesson_reviews_id}).all
+           @lesson_reviews.each do |review|
+            %>
+            
+           <div class="review card">
+             <% unless review.img.empty? %>
+             <img src="<%= review.img %>" class="card-img-top">
+             <% end %>
+            
+           <div class="card-body"> 
+              <p class="card-title"><%= review.title %></p>
+              <p class="card-boddy"><%= review.body %></p>
+              <p><%= review.point %>P</p>
+              <p>作者：<%= @user.name %></p>
+            </div>  
+            
+            <div class="card-footer">
+                 <% if session[:user] == review.user_id then %>
+                <form action="/edit/<%= review.id %>" method="post"><input type="submit" value="編集" class="btn btn-success"></form>
+                <form action="/delete/<%= review.id %>" method="post"><input type="submit" value="削除" class="btn btn-success"></form>
+                <% else %>
+                <form action="/good/<%= review.id %>" method="post"><input type="submit" value="いいね" class="btn btn-success"></form>
+                <form action="/request/<%= review.id %>" method="post"><input type="submit" value="リクエストを送る" class="btn btn-success"></form>
+                <% end %>
+            </div>
+            </div>
+     <% end %>
+    </div>

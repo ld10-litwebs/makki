@@ -1,0 +1,17 @@
+<div class="container">
+<div class="jumbotron bg-white">
+  <%
+    ureview = @review.user_id
+    user = User.find(ureview)
+  %>
+  <h3><%= User.find(ureview).name %>さんへのリクエスト申請が完了いたしました。</h3>
+     <p class="lead">下記LINE IDへメッセージをお送りください。</p>
+      <hr class="my-4">
+  <div class="alert alert-warning">
+  <h4 class="alert-heading">ID：<%= User.find(ureview).line_id %></h4>
+  </div>
+  <p class="lead">
+    <a class="btn btn-block btn-secondary" href="/" role="button">ホームに戻る</a>
+  </p>
+</div>
+</div>
